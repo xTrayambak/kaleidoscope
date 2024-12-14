@@ -1,6 +1,6 @@
 # Package
 
-version       = "0.1.0"
+version       = "0.1.1"
 author        = "xTrayambak"
 description   = "SIMD accelerated string routines in pure Nim"
 license       = "MIT"
