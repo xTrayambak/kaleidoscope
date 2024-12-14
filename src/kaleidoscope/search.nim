@@ -1,6 +1,8 @@
 import std/bitops
-import pkg/nimsimd/[avx2, sse41]
 import kaleidoscope/common
+
+when not noSimd:
+  import pkg/nimsimd/[avx2, sse41]
 
 func mm_mpsadbw_epu8_correct*(a, b: M128i, imm8: int32 | uint32): M128i {.importc: "_mm_mpsadbw_epu8", header: "smmintrin.h".}
 
@@ -97,6 +99,8 @@ proc find*(haystack, needle: string): int {.inline.} =
     else:
       if hasAvx2:
         return findAvx2(haystack, needle)
+      elif hasSse4:
+        return findSse4(haystack, needle)
       else:
         return findScalar(haystack, needle)
 
