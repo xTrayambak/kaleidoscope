@@ -36,13 +36,16 @@ when not noSimd:
   func findAvx2(haystack, needle: string): int {.inline.} =
     ## AVX2 implementation of string-find
     ## Source: http://0x80.pl/articles/simd-strfind.html
+    debugecho "hlen: " & $haystack.len
+    debugecho "nlen: " & $needle.len
     let
       first = mm256_set1_epi8(cast[uint8](needle[0]))
       last = mm256_set1_epi8(cast[uint8](needle[needle.len - 1]))
   
     var i: int
     while i < haystack.len:
-      let 
+      if i + needle.len - 1 > haystack.len: break
+      let
         blockFirst = mm256_loadu_si256(cast[ptr M256i](haystack[i].addr))
         blockLast = mm256_loadu_si256(cast[ptr M256i](haystack[i + needle.len - 1].addr))
 
@@ -91,6 +94,17 @@ when not noSimd:
   {.pop.}
 
 proc find*(haystack, needle: string): int {.inline.} =
+  if needle.len > haystack.len:
+    return 0
+
+  if needle.len == 1 and haystack.len == 1:
+    return (
+      if needle[0] == haystack[0]:
+        1
+      else:
+        -1
+    )
+
   case needle.len
   of 0: return 0
   else:
