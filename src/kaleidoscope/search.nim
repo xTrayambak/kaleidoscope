@@ -36,8 +36,6 @@ when not noSimd:
   func findAvx2(haystack, needle: string): int {.inline.} =
     ## AVX2 implementation of string-find
     ## Source: http://0x80.pl/articles/simd-strfind.html
-    debugecho "hlen: " & $haystack.len
-    debugecho "nlen: " & $needle.len
     let
       first = mm256_set1_epi8(cast[uint8](needle[0]))
       last = mm256_set1_epi8(cast[uint8](needle[needle.len - 1]))
