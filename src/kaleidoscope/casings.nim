@@ -41,6 +41,9 @@ when not noSimd:
       pos += 16
 
     while len > 0:
+      if buffer.len - 1 < pos:
+        buffer.setLen(pos + 1)
+      
       buffer[pos] = toLowerAscii(str[pos])
       inc pos
       dec len
