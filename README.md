@@ -48,7 +48,7 @@ It blows other JavaScript engines like SpiderMonkey and Boa's implementations ou
 
 # Installation
 ```command
-$ nimble add https://github.com/xTrayambak/kaleidoscope
+$ nimble add kaleidoscope
 ```
 
 # Usage
@@ -64,5 +64,5 @@ let pos = haystack.find(needle)
 ```
 
 # Roadmap
-- Add ARM support (I do not own an ARM CPU apart from my phone, if any of you do, please try to add it)
-- Add RISC-V support (same as above, I do not own a RISC-V machine)
+- Add ARM support (I do not own an ARM CPU apart from my phone.)
+- Add RISC-V support (Same as above, I do not own a RISC-V machine)
