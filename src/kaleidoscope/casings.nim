@@ -78,7 +78,7 @@ when not noSimd:
       pos += 16
 
     while len > 0:
-      buffer[pos] = toLowerAscii(str[pos])
+      buffer[pos] = toUpperAscii(str[pos])
       inc pos
       dec len
 
