@@ -1,11 +1,10 @@
 # Package
 
-version       = "0.1.2"
-author        = "xTrayambak"
-description   = "SIMD accelerated string routines in pure Nim"
-license       = "MIT"
-srcDir        = "src"
-
+version = "0.1.2"
+author = "xTrayambak"
+description = "SIMD accelerated string routines in pure Nim"
+license = "MIT"
+srcDir = "src"
 
 # Dependencies
 

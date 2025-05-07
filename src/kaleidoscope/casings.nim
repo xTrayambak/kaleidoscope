@@ -1,5 +1,5 @@
 import std/strutils
-import kaleidoscope/common
+import pkg/kaleidoscope/common
 
 const
   a = cast[uint8]('a')
@@ -9,7 +9,7 @@ const
 
 when not noSimd:
   import pkg/nimsimd/sse41
-  
+
   {.push checks: off.}
   func toLowerAsciiSse4*(str: string): string {.inline.} =
     ## SSE4.1 implementation of `toLowerAscii`
@@ -17,7 +17,7 @@ when not noSimd:
     ## the number of characters at that point is lower than 16 and probably won't take
     ## much time to process anyways.
     ## https://gist.github.com/easyaspi314/9d31e5c0f9cead66aba2ede248b74d64
-    var 
+    var
       len = str.len
       pos = 0
       buffer = newStringOfCap(str.len - 1)
@@ -30,7 +30,7 @@ when not noSimd:
     while len >= 16:
       let
         inp = mm_loadu_si128(cast[ptr M128i](str[pos].addr))
-        greaterThanA =  mm_cmpgt_epi8(inp, asciiA)
+        greaterThanA = mm_cmpgt_epi8(inp, asciiA)
         lessEqualZ = mm_cmplt_epi8(inp, asciiZ)
         mask = mm_and_si128(greaterThanA, lessEqualZ)
         toAdd = mm_and_si128(mask, diff)
@@ -43,11 +43,11 @@ when not noSimd:
     while len > 0:
       if buffer.len - 1 < pos:
         buffer.setLen(pos + 1)
-      
+
       buffer[pos] = toLowerAscii(str[pos])
       inc pos
       dec len
-  
+
   func toUpperAsciiSse4*(str: string): string {.inline.} =
     ## SSE4.1 implementation of `toUpperAscii`
     ## The remaining characters are fed to the standard library's implementation, since
@@ -85,6 +85,9 @@ when not noSimd:
   {.pop.}
 
 proc toLowerAscii*(str: string): string {.inline.} =
+  ## Convert `str` to lowercase ASCII.
+  ##
+  ## This function uses SIMD acceleration whenever possible.
   when noSimd:
     return strutils.toLowerAscii(str)
   else:
@@ -94,6 +97,9 @@ proc toLowerAscii*(str: string): string {.inline.} =
       return strutils.toLowerAscii(str)
 
 proc toUpperAscii*(str: string): string {.inline.} =
+  ## Convert `str` to uppercase ASCII.
+  ##
+  ## This function uses SIMD acceleration whenever possible.
   when noSimd:
     return strutils.toUpperAscii(str)
   else:
