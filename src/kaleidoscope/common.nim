@@ -1,8 +1,7 @@
 import nimsimd/runtimecheck
 
-const
-  noSimd* = defined(kaleidoscopeNoSimd)
+const noSimd* = defined(kaleidoscopeNoSimd)
 
 let
-  hasAvx2* = checkInstructionSets({ AVX2 })
-  hasSse4* = checkInstructionSets({ SSE41 })
+  hasAvx2* = checkInstructionSets({AVX2})
+  hasSse4* = checkInstructionSets({SSE41})
