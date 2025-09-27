@@ -25,6 +25,8 @@ func findScalar(haystack, needle: string): int {.inline.} =
       if flag:
         return i
 
+  return -1
+
 proc builtin_ctz(x: cuint): cint {.importc: "__builtin_ctz", cdecl.}
 
 when not noSimd:
