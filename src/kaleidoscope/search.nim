@@ -4,9 +4,9 @@ import pkg/kaleidoscope/common
 when not noSimd:
   import pkg/nimsimd/[avx2, sse41]
 
-func mm_mpsadbw_epu8_correct*(
-  a, b: M128i, imm8: int32 | uint32
-): M128i {.importc: "_mm_mpsadbw_epu8", header: "smmintrin.h".}
+  func mm_mpsadbw_epu8_correct*(
+    a, b: M128i, imm8: int32 | uint32
+  ): M128i {.importc: "_mm_mpsadbw_epu8", header: "smmintrin.h".}
 
 func findScalar(haystack, needle: string): int {.inline.} =
   ## Scalar implementation of a very naive string search algorithm
@@ -69,7 +69,7 @@ when not noSimd:
 
     -1
 
-  func findSse4(haystack, needle: string): int {.inline.} =
+  func findSse4(haystack, needle: string): int {.inline, used.} =
     let
       prefix = mm_loadu_si128(cast[ptr M128i](needle[0].addr))
       zeros = mm_setzero_si128()
@@ -92,7 +92,6 @@ when not noSimd:
         mask = clearLeftmostSet(mask)
 
       i += 8
-
     -1
   {.pop.}
 
@@ -102,10 +101,10 @@ proc find*(haystack, needle: string): int {.inline.} =
   ## This function either returns said position or -1 if there aren't
   ## any such occurences.
   if needle.len > haystack.len:
-    return 0
+    return -1
 
   if needle.len == 1 and haystack.len == 1:
-    return (if needle[0] == haystack[0]: 1 else: -1)
+    return (if needle[0] == haystack[0]: 0 else: -1)
 
   case needle.len
   of 0:
@@ -114,10 +113,8 @@ proc find*(haystack, needle: string): int {.inline.} =
     when noSimd:
       return findScalar(haystack, needle)
     else:
-      if hasAvx2:
+      if hasAvx2 and haystack.len >= 32:
         return findAvx2(haystack, needle)
-      elif hasSse4:
-        return findSse4(haystack, needle)
       else:
         return findScalar(haystack, needle)
 
